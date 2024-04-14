@@ -27,7 +27,7 @@ Here's a guide to getting this project up and running:
   npm run dev
   ```
 
-  or alternatively you can use bun.sh
+  or alternatively you can use [bun.sh](https://bun.sh/)
 
   ```bash
     bun install
