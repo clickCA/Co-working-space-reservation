@@ -32,4 +32,4 @@ Here's a guide to getting this project up and running:
   ```bash
     bun install
     bun run dev
-    ```
+  ```
