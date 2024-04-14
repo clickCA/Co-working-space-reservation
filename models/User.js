@@ -12,7 +12,7 @@ const UserSchema = new mongoose.Schema({
     required: [true, "Please add an email"],
     unique: true,
     match: [
-      /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
+      /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/,
       "Please add a valid email",
     ],
   },
@@ -21,10 +21,19 @@ const UserSchema = new mongoose.Schema({
     enum: ["user", "admin"],
     default: "user",
   },
+  telephone: {
+    type: String,
+    required: [true, "Please add a phone number"],
+    maxlength: [20, "Phone number can not be longer than 20 characters"],
+    match: [
+      /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}$/ ,
+      "Please add a valid phone number",
+    ],
+  },
   password: {
     type: String,
     required: [true, "Please add a password"],
-    minlength: 6,
+    minlength: [6, "Password must be at least 6 characters"],
     select: false,
   },
   resetPasswordToken: String,
