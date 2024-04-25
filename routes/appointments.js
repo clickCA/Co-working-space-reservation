@@ -1,24 +1,25 @@
 const express = require("express");
+const { protect, authorize } = require("../middleware/auth");
+
 const {
-  getAppointments,
-  getAppointment,
-  addAppointment,
-  updateAppointment,
-  deleteAppointment,
-} = require("../controllers/appointments");
+  getReservations,
+  getReservation,
+  addReservation,
+  updateReservation,
+  deleteReservation,
+} = require("../controllers/reservations");
 
 const router = express.Router({ mergeParams: true });
 
-const { protect, authorize } = require("../middleware/auth");
 
 router
   .route("/")
-  .get(protect, getAppointments)
-  .post(protect, authorize("user", "admin"), addAppointment);
+  .get(protect, getReservations)
+  .post(protect, authorize("user", "admin"), addReservation);
 router
   .route("/:id")
-  .get(protect, getAppointment)
-  .put(protect, authorize("user", "admin"), updateAppointment)
-  .delete(protect, authorize("user", "admin"), deleteAppointment);
+  .get(protect, getReservation)
+  .put(protect, authorize("user", "admin"), updateReservation)
+  .delete(protect, authorize("user", "admin"), deleteReservation);
 
 module.exports = router;
