@@ -15,6 +15,12 @@ const CoworkingSpaceSchema = new mongoose.Schema(
     },
     tel: {
       type: String,
+      required: [true, "Please add a phone number"],
+      maxlength: [20, "Phone number can not be longer than 20 characters"],
+      match: [
+        /^(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}$/ ,
+        "Please add a valid phone number",
+      ],
     },
     openTime: {
       type: String,
