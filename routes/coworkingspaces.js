@@ -1,6 +1,17 @@
 const express = require("express");
-const appointmentRouter = require("./reservations");
+const reservationRouter = require("./reservations");
 const { protect, authorize } = require("../middleware/auth");
+
+const {
+  getCoworkingSpaces,
+  getCoworkingSpace,
+  createCoworkingSpace,
+  updateCoworkingSpace,
+  deleteCoworkingSpace,
+} = require("../controllers/coworkingspaces");
+//Include other resource routers
+
+const router = express.Router({ mergeParams: true });
 /** 
  * @swagger
  * components:
@@ -32,10 +43,9 @@ const { protect, authorize } = require("../middleware/auth");
  *          type: string
  *          description: The closing time of the coworking space
  *      example:
- *        id: 5d713995b721c3bb38c1f5d0
  *        name: Coworking Space
  *        address: 1234 Coworking Space
- *        tel: 0123456789
+ *        tel: "092-253-0275"
  *        openTime: 08:00
  *        closeTime: 18:00
  */
@@ -168,19 +178,8 @@ const { protect, authorize } = require("../middleware/auth");
  *        description: The coworking space was not found
  */
 
-const {
-  getCoworkingSpaces,
-  getCoworkingSpace,
-  createCoworkingSpace,
-  updateCoworkingSpace,
-  deleteCoworkingSpace,
-} = require("../controllers/coworkingspaces");
-//Include other resource routers
-
-const router = express.Router({ mergeParams: true });
-
 //Re-route into other resource routers
-router.use("/:coworkingSpaceId/appointments", appointmentRouter);
+router.use("/:coworkingSpaceId/reservations", reservationRouter);
 
 router
   .route("/")
