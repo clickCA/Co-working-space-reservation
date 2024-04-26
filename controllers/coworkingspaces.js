@@ -62,7 +62,7 @@ exports.getCoworkingSpaces = async (req, res, next) => {
       data: CoworkingSpaces,
     });
   } catch (err) {
-    res.status(400).json({ success: false });
+    res.status(400).json({ success: false, message: err.message});
   }
 };
 
@@ -72,13 +72,13 @@ exports.getCoworkingSpaces = async (req, res, next) => {
 // @access  Public
 exports.getCoworkingSpace = async (req, res, next) => {
   try {
-    const CoworkingSpace = await CoworkingSpace.findById(req.params.id);
-    if (!CoworkingSpace) {
+    const coworkingSpace = await CoworkingSpace.findById(req.params.id);
+    if (!coworkingSpace) {
       return res.status(400).json({ success: false });
     }
-    res.status(200).json({ success: true, data: CoworkingSpace });
+    res.status(200).json({ success: true, data: coworkingSpace });
   } catch (err) {
-    res.status(400).json({ success: false });
+    res.status(400).json({ success: false, message: err.message});
   }
 };
 
@@ -87,8 +87,12 @@ exports.getCoworkingSpace = async (req, res, next) => {
 // @route   POST /api/v1/coworkingspaces
 // @access  Private
 exports.createCoworkingSpace = async (req, res, next) => {
-  const CoworkingSpace = await CoworkingSpace.create(req.body);
-  res.status(201).json({ success: true, data: CoworkingSpace });
+  try {
+    const coworkingSpace = await CoworkingSpace.create(req.body);
+    res.status(201).json({ success: true, data: coworkingSpace });
+  } catch (err) {
+    res.status(400).json({ success: false, message: err.message});
+  }
 };
 
 // @desc    Update coworking space
@@ -96,16 +100,16 @@ exports.createCoworkingSpace = async (req, res, next) => {
 // @access  Private
 exports.updateCoworkingSpace = async (req, res, next) => {
   try {
-    const CoworkingSpace = await CoworkingSpace.findByIdAndUpdate(req.params.id, req.body, {
+    const coworkingSpace = await CoworkingSpace.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
       runValidators: true,
     });
     if (!CoworkingSpace) {
       return res.status(400).json({ success: false });
     }
-    res.status(200).json({ success: true, data: CoworkingSpace });
+    res.status(200).json({ success: true, data: coworkingSpace });
   } catch (err) {
-    res.status(400).json({ success: false });
+    res.status(400).json({ success: false, message: err.message});
   }
 };
 
@@ -114,15 +118,15 @@ exports.updateCoworkingSpace = async (req, res, next) => {
 // @access  Private
 exports.deleteCoworkingSpace = async (req, res, next) => {
   try {
-    const CoworkingSpace = await CoworkingSpace.findById(req.params.id);
+    const coworkingSpace = await CoworkingSpace.findById(req.params.id);
     if (!CoworkingSpace) {
       return res.status(400).json({
         success: false,
       });
     }
-    CoworkingSpace.remove();
+    coworkingSpace.remove();
     res.status(200).json({ success: true, data: {} });
   } catch (err) {
-    res.status(400).json({ success: false });
+    res.status(400).json({ success: false, message: err.message});
   }
 };
