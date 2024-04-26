@@ -1,7 +1,44 @@
 const express = require("express");
 const appointmentRouter = require("./reservations");
 const { protect, authorize } = require("../middleware/auth");
-
+/** 
+ * @swagger
+ * components:
+ *  schemas:
+ *    CoworkingSpace:
+ *      type: object
+ *      required:
+ *        - name
+ *        - address
+ *        - openTime
+ *        - closeTime
+ *      properties:
+ *        id:
+ *          type: string
+ *          description: The auto-generated id of the coworking space
+ *        name:
+ *          type: string
+ *          description: The name of the coworking space
+ *        address:
+ *          type: string
+ *          description: The address of the coworking space
+ *        tel:
+ *          type: string
+ *          description: The telephone number of the coworking space
+ *        openTime:
+ *          type: string
+ *          description: The opening time of the coworking space
+ *        closeTime:
+ *          type: string
+ *          description: The closing time of the coworking space
+ *      example:
+ *        id: 5d713995b721c3bb38c1f5d0
+ *        name: Coworking Space
+ *        address: 1234 Coworking Space
+ *        tel: 0123456789
+ *        openTime: 08:00
+ *        closeTime: 18:00
+ */
 /**
  * @swagger
  * tags:
@@ -14,6 +51,8 @@ const { protect, authorize } = require("../middleware/auth");
  *  get:
  *    summary: Returns the list of all the coworking spaces
  *    tags: [CoworkingSpaces]
+ *    security:
+ *      - bearerAuth: []
  *    responses:
  *      200:
  *        description: The list of the coworking spaces
@@ -30,6 +69,8 @@ const { protect, authorize } = require("../middleware/auth");
  *  get:
  *    summary: Get the coworking space by id
  *    tags: [CoworkingSpaces]
+ *    security:
+ *      - bearerAuth: []
  *    parameters:
  *      - in: path
  *        name: id
@@ -51,23 +92,25 @@ const { protect, authorize } = require("../middleware/auth");
  * @swagger
  * /coworkingspaces:
  *   post:
- *     summary: Create a new coworking space
- *     tags: [CoworkingSpaces]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/CoworkingSpace'
- *     responses:
- *       201:
- *         description: The coworking space was successfully created
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/CoworkingSpace'
- *       500:
- *         description: Some server error
+ *      summary: Create a new coworking space
+ *      tags: [CoworkingSpaces]
+ *      security:
+ *        - bearerAuth: []
+ *      requestBody:
+ *        required: true
+ *        content:
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/CoworkingSpace'
+ *      responses:
+ *        201:
+ *          description: The coworking space was successfully created
+ *          content:
+ *            application/json:
+ *              schema:
+ *                $ref: '#/components/schemas/CoworkingSpace'
+ *        500:
+ *          description: Some server error
  */
 /**
  * @swagger
@@ -75,6 +118,8 @@ const { protect, authorize } = require("../middleware/auth");
  *  put:
  *    summary: Update the coworking space by the id
  *    tags: [CoworkingSpaces]
+ *    security:
+ *      - bearerAuth: []
  *    parameters:
  *      - in: path
  *        name: id
@@ -106,6 +151,8 @@ const { protect, authorize } = require("../middleware/auth");
  *    delete:
  *      summary: Remove the coworking space by id
  *      tags: [CoworkingSpaces]
+ *      security:
+ *        - bearerAuth: []
  *      parameters:
  *        - in: path
  *          name: id
