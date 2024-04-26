@@ -25,6 +25,15 @@ const swaggerOptions = {
         url: "http://localhost:5000/api/v1",
       },
     ],
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        },
+      },
+    },
   },
   apis: ["./routes/*.js"],
 };
@@ -61,11 +70,11 @@ const limiter = rateLimit({
 app.use(limiter);
 
 // Router files
-const hospitals = require("./routes/hospitals");
+const coworkingspaces = require("./routes/coworkingspaces");
 const auth = require("./routes/auth");
-const appointments = require("./routes/appointments");
+const appointments = require("./routes/reservations");
 
-app.use("/api/v1/hospitals", hospitals);
+app.use("/api/v1/coworkingspaces", coworkingspaces);
 app.use("/api/v1/auth", auth);
 app.use("/api/v1/appointments", appointments);
 

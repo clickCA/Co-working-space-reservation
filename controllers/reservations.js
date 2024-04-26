@@ -1,5 +1,5 @@
 const Reservation = require("../models/Reservation");
-const Hospital = require("../models/Hospital");
+const Hospital = require("../models/CoworkingSpace");
 
 //@desc     Get all reservations
 //@route    GET /api/v1/reservations

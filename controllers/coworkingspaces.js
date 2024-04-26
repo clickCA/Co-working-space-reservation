@@ -1,10 +1,9 @@
-const Hospital = require("../models/Hospital");
-const vacCenter = require("../models/VacCenter");
+const CoworkingSpace = require("../models/CoworkingSpace");
 
-// @desc    Get all hospitals
-// @route   GET /api/v1/hospitals
+// @desc    Get all coworking spaces
+// @route   GET /api/v1/coworkingspaces
 // @access  Public
-exports.getHospitals = async (req, res, next) => {
+exports.getCoworkingSpaces = async (req, res, next) => {
   let query;
   const reqQuery = { ...req.query };
 
@@ -22,7 +21,7 @@ exports.getHospitals = async (req, res, next) => {
   );
 
   // finding resource
-  query = Hospital.find(JSON.parse(queryStr)).populate("appointments");
+  query = CoworkingSpace.find(JSON.parse(queryStr)).populate("reservations");
 
   // select fields
   if (req.query.select) {
@@ -44,9 +43,9 @@ exports.getHospitals = async (req, res, next) => {
   const endIndex = page * limit;
 
   try {
-    const total = await Hospital.countDocuments();
+    const total = await CoworkingSpace.countDocuments();
     query = query.skip(startIndex).limit(limit);
-    const hospitals = await query;
+    const CoworkingSpaces = await query;
     console.log(req.query);
 
     const pagination = {};
@@ -59,84 +58,71 @@ exports.getHospitals = async (req, res, next) => {
 
     res.status(200).json({
       success: true,
-      count: hospitals.length,
-      data: hospitals,
+      count: CoworkingSpaces.length,
+      data: CoworkingSpaces,
     });
   } catch (err) {
     res.status(400).json({ success: false });
   }
 };
 
-// @desc    Get single hospital
-// @route   GET /api/v1/hospitals/:id
+
+// @desc    Get single coworking space
+// @route   GET /api/v1/coworkingspaces/:id
 // @access  Public
-exports.getHospital = async (req, res, next) => {
+exports.getCoworkingSpace = async (req, res, next) => {
   try {
-    const hospital = await Hospital.findById(req.params.id);
-    if (!hospital) {
+    const CoworkingSpace = await CoworkingSpace.findById(req.params.id);
+    if (!CoworkingSpace) {
       return res.status(400).json({ success: false });
     }
-    res.status(200).json({ success: true, data: hospital });
+    res.status(200).json({ success: true, data: CoworkingSpace });
   } catch (err) {
     res.status(400).json({ success: false });
   }
 };
 
-// @desc    Create new hospital
-// @route   POST /api/v1/hospitals
+
+// @desc    Create new coworking space
+// @route   POST /api/v1/coworkingspaces
 // @access  Private
-exports.createHospital = async (req, res, next) => {
-  const hospital = await Hospital.create(req.body);
-  res.status(201).json({ success: true, data: hospital });
+exports.createCoworkingSpace = async (req, res, next) => {
+  const CoworkingSpace = await CoworkingSpace.create(req.body);
+  res.status(201).json({ success: true, data: CoworkingSpace });
 };
 
-// @desc    Update hospital
-// @route   PUT /api/v1/hospitals/:id
+// @desc    Update coworking space
+// @route   PUT /api/v1/coworkingspaces/:id
 // @access  Private
-exports.updateHospital = async (req, res, next) => {
+exports.updateCoworkingSpace = async (req, res, next) => {
   try {
-    const hospital = await Hospital.findByIdAndUpdate(req.params.id, req.body, {
+    const CoworkingSpace = await CoworkingSpace.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
       runValidators: true,
     });
-    if (!hospital) {
+    if (!CoworkingSpace) {
       return res.status(400).json({ success: false });
     }
-    res.status(200).json({ success: true, data: hospital });
+    res.status(200).json({ success: true, data: CoworkingSpace });
   } catch (err) {
     res.status(400).json({ success: false });
   }
 };
 
-// @desc    Delete hospital
-// @route   DELETE /api/v1/hospitals/:id
+// @desc    Delete coworking space
+// @route   DELETE /api/v1/coworkingspaces/:id
 // @access  Private
-exports.deleteHospital = async (req, res, next) => {
+exports.deleteCoworkingSpace = async (req, res, next) => {
   try {
-    const hospital = await Hospital.findById(req.params.id);
-    if (!hospital) {
+    const CoworkingSpace = await CoworkingSpace.findById(req.params.id);
+    if (!CoworkingSpace) {
       return res.status(400).json({
         success: false,
       });
     }
-    hospital.remove();
+    CoworkingSpace.remove();
     res.status(200).json({ success: true, data: {} });
   } catch (err) {
     res.status(400).json({ success: false });
   }
-};
-
-// @desc    Get vaccine centers
-// @route   GET /api/v1/hospitals/vacCenters
-// @access  Public
-exports.getVacCenters = (req, res, next) => {
-  vacCenter.getAll((err, data) => {
-    if (err) {
-      res.status(500).send({
-        message:
-          err.message ||
-          "Some error occurred while retrieving Vaccine Centers.",
-      });
-    } else res.send(data);
-  });
 };
