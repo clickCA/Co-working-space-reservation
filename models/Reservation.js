@@ -2,8 +2,9 @@ const mongoose = require("mongoose");
 
 const ReservationSchema = new mongoose.Schema({
   reservationDate: {
-    type: Date,
+    type: String,
     required: true,
+    match: [/^\d{4}-\d{2}-\d{2}$/, 'Please enter a valid date in the format "YYYY-MM-DD"'],
   },
   user: {
     type: mongoose.Schema.ObjectId,

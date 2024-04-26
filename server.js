@@ -72,11 +72,11 @@ app.use(limiter);
 // Router files
 const coworkingspaces = require("./routes/coworkingspaces");
 const auth = require("./routes/auth");
-const appointments = require("./routes/reservations");
+const reservations = require("./routes/reservations");
 
 app.use("/api/v1/coworkingspaces", coworkingspaces);
 app.use("/api/v1/auth", auth);
-app.use("/api/v1/appointments", appointments);
+app.use("/api/v1/reservations", reservations);
 
 app.get("/", (req, res) => {
   res.status(200).json({ success: true, data: { id: 1 } });

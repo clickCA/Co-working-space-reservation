@@ -1,5 +1,5 @@
 const Reservation = require("../models/Reservation");
-const Hospital = require("../models/CoworkingSpace");
+const CoworkingSpace = require("../models/CoworkingSpace");
 
 //@desc     Get all reservations
 //@route    GET /api/v1/reservations
@@ -9,13 +9,13 @@ exports.getReservations = async (req, res, next) => {
   //General users can only see their own reservations!
   if (req.user.role !== "admin") {
     query = Reservation.find({ user: req.user.id }).populate({
-      path: "hospital",
-      select: "name province tel",
+      path: "coworkingSpace",
+      select: "name address tel",
     });
   } else {
     query = Reservation.find().populate({
-      path: "hospital",
-      select: "name province tel",
+      path: "coworkingSpace",
+      select: "name address tel",
     });
   }
   try {
@@ -37,8 +37,8 @@ exports.getReservations = async (req, res, next) => {
 exports.getReservation = async (req, res, next) => {
   try {
     const reservation = await Reservation.findById(req.params.id).populate({
-      path: "hospital",
-      select: "name description tel",
+      path: "coworkingSpace",
+      select: "name address tel",
     });
 
     if (!reservation) {
@@ -57,25 +57,29 @@ exports.getReservation = async (req, res, next) => {
 };
 
 //@desc     Add a reservation
-//@route    POST /api/v1/hospitals/:hospitalId/reservations
+//@route    POST /api/v1/reservations
 //@access   Private
 exports.addReservation = async (req, res, next) => {
   try {
-    req.body.hospital = req.params.hospitalId;
-
-    const hospital = await Hospital.findById(req.params.hospitalId);
-
-    if (!hospital) {
-      return res.status(404).json({
+    // Check if the date is in a valid format
+    const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+    if (!dateRegex.test(req.body.reservationDate)) {
+      return res.status(400).json({
         success: false,
-        message: `No hospital with the id of ${req.params.hospitalId}`,
+        message: "Invalid date format. Please use the format YYYY-MM-DD",
       });
     }
-    console.log(req.body);
-    //add user to req.body
-    req.body.user = req.user.id;
+
+    const coworkingspace = await CoworkingSpace.findById(req.body.coworkingSpace);
+
+    if (!coworkingspace) {
+      return res.status(404).json({
+        success: false,
+        message: `No CoworkingSpace with the id of ${req.body.coworkingSpaceId}`,
+      });
+    }
     //Check for existing reservation
-    const existingReservation = await Reservation.find({ user: req.user.id });
+    const existingReservation = await Reservation.find({ user: req.body.user });
     //If the user is not an admin, they can only create 3 reservations.
     if (existingReservation.length >= 3 && req.user.role !== "admin") {
       return res.status(400).json({
@@ -84,8 +88,9 @@ exports.addReservation = async (req, res, next) => {
       });
     }
 
+    
     const reservation = await Reservation.create(req.body);
-    res.status(200).json({
+    res.status(201).json({
       success: true,
       data: reservation,
     });
@@ -102,7 +107,7 @@ exports.addReservation = async (req, res, next) => {
 //@access   Private
 exports.updateReservation = async (req, res, next) => {
   try {
-    let reservation = await Reservation.findById(req.params.id);
+    var reservation = await Reservation.findById(req.params.id);
 
     if (!reservation) {
       return res
