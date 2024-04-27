@@ -1,6 +1,12 @@
 # Co-working space reservation
 
-**This project is a fork of the original vacqbackend project.**
+This project provides a backend API for managing co-working space reservations. It leverages Express.js for server-side development and MongoDB for a flexible document database.
+
+**Prerequisites:**
+
+- Node.js (version 14 or later recommended)
+- npm (Node Package Manager) or bun (Bun is a fast JavaScript all-in-one toolkit)
+
 
 Here's a guide to getting this project up and running:
 
