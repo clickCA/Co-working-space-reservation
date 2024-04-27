@@ -1,0 +1,1247 @@
+{
+	"info": {
+		"_postman_id": "0c28894c-1fb5-4ee6-b7bc-84969de07905",
+		"name": "CoworkingSpace testsequence",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32558188"
+	},
+	"item": [
+		{
+			"name": "seq1-8 (user)",
+			"item": [
+				{
+					"name": "auth/register",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200); ",
+									"});",
+									"",
+									"pm.test(\"Response contains success message\", function () {",
+									"    const jsonData = pm.response.json(); ",
+									"    pm.expect(jsonData.success).to.be.true; ",
+									"});",
+									"",
+									"pm.test(\"Token is present\", function () {",
+									"    const jsonData = pm.response.json(); ",
+									"    pm.expect(jsonData.token).to.exist; ",
+									"});",
+									"",
+									"// set env variables of user",
+									"const requestData = JSON.parse(pm.request.body.raw);",
+									"const responseData = pm.response.json(); ",
+									"pm.environment.set(\"userEmail\", requestData.email); ",
+									"pm.environment.set(\"userName\", requestData.name)",
+									"pm.environment.set(\"userPassword\", requestData.password); ",
+									"if (requestData.role == \"user\"){",
+									"    pm.environment.set(\"userToken\", responseData.token); ",
+									"}",
+									"else{",
+									"    pm.environment.set(\"adminToken\", responseData.token)",
+									"}",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\":\"{{$randomEmail}}\",\n    \"name\":\"{{$randomFileName}}\",\n    \"password\":\"123456789\",\n    \"telephone\" : \"{{$randomPhoneNumber}}\",\n    \"role\": \"user\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/v1/auth/register",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "admin register",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\":\"s@gmail.com\",\n    \"name\":\"p\",\n    \"password\":\"5465464ads\",\n    \"telephone\" : \"092-253-0275\",\n    \"role\": \"admin\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{URL}}/api/v1/auth/register",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"auth",
+										"register"
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						},
+						{
+							"name": "user register",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\":\"{{$randomEmail}}\",\n    \"name\":\"{{$randomFileName}}\",\n    \"password\":\"{{$randomPassword}}\",\n    \"telephone\" : \"{{$randomPhoneNumber}}\",\n    \"role\": \"user\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{URL}}/api/v1/auth/register",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"auth",
+										"register"
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						}
+					]
+				},
+				{
+					"name": "auth/login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"{{userEmail}}\",\n    \"name\": \"{{userName}}\",\n    \"password\": \"123456789\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/v1/auth/login",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "wrong validation login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//pm.environment.set(\"TOKEN\",pm.response.json().token)\r",
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(401);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Invalid Credentials Test\", function () {\r",
+									"    const jsonData = pm.response.json();\r",
+									"\r",
+									"    pm.expect(jsonData.success).to.eql(false);\r",
+									"    pm.expect(pm.response.to.have.status(401)); // Check for the 400 Bad Request status code\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": "JSON TYPE",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"{{userEmail}}\",\r\n    \"password\": \"notAcorrectOne\" \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/v1/auth/login",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "auth/me",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"var jsonData = pm.response.json();",
+									"pm.environment.set(\"userId\", jsonData.data._id);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{userToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/api/v1/auth/me",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all spaces",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"const response = pm.response.json();",
+									"",
+									"console.log(response)",
+									"",
+									"pm.test(\"There are some spaces!!\" , () => {",
+									"    pm.expect(response.count).to.be.above(0);",
+									"})",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{userToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2MWI3MTU1MjFhM2VkODM0NjhlYTU3OSIsImlhdCI6MTcxNDEyNTQxNCwiZXhwIjoxNzE2NzE3NDE0fQ.Bb-oTlgg6TyJINWDtDZUSHAHXeYTN5Kf6O8JHTE5KVI"
+							}
+						],
+						"url": {
+							"raw": "http://{{URL}}/api/v1/coworkingspaces",
+							"protocol": "http",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"coworkingspaces"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add reservation1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// set env variables of user",
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"const responseJson = pm.response.json(); ",
+									"pm.environment.set(\"userReservationId\", responseJson.data._id); ",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2MWI3MTU1MjFhM2VkODM0NjhlYTU3OSIsImlhdCI6MTcxNDEyNTQxNCwiZXhwIjoxNzE2NzE3NDE0fQ.Bb-oTlgg6TyJINWDtDZUSHAHXeYTN5Kf6O8JHTE5KVI"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"reservationDate\": \"2021-06-01\",\n  \"user\": \"{{userId}}\",\n  \"coworkingSpace\": \"662b4e52b2d1dc12fd194d00\"\n}"
+						},
+						"url": {
+							"raw": "{{URL}}/api/v1/reservations",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"reservations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add reservation2",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// set env variables of user",
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"const responseJson = pm.response.json(); ",
+									"pm.environment.set(\"userReservationIdForAdmin\", responseJson.data._id); ",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{userToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2MWI3MTU1MjFhM2VkODM0NjhlYTU3OSIsImlhdCI6MTcxNDEyNTQxNCwiZXhwIjoxNzE2NzE3NDE0fQ.Bb-oTlgg6TyJINWDtDZUSHAHXeYTN5Kf6O8JHTE5KVI"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"reservationDate\": \"2021-06-01\",\n  \"user\": \"{{userId}}\",\n  \"coworkingSpace\": \"662b4e52b2d1dc12fd194d00\"\n}"
+						},
+						"url": {
+							"raw": "{{URL}}/api/v1/reservations",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"reservations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add reservation (space doesnt exist)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"space id isn't existed\", function () {\r",
+									"    // Status code assertion\r",
+									"    pm.response.to.have.status(404);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{userToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": "JSON Type",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"reservationDate\": \"2021-06-01\",\r\n  \"user\": \"{{userId}}\",\r\n  \"coworkingSpace\": \"662b9e1ae7a5a195d6c6812a\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/v1/reservations",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"reservations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add reservation (wrong format date)",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function generateRandomDatetimeAfterNow() {\r",
+									"  // Get the current timestamp in milliseconds\r",
+									"  const nowTimestamp = Date.now();\r",
+									"\r",
+									"  // Determine the maximum range for randomness (e.g., 3 days into the future)\r",
+									"  const maxFutureMilliseconds = 7 * 24 * 60 * 60 * 1000; // 3 days\r",
+									"\r",
+									"  // Generate a random offset within the specified range\r",
+									"  const randomOffset = Math.random() * maxFutureMilliseconds;\r",
+									"\r",
+									"  // Calculate the random future timestamp \r",
+									"  const randomFutureTimestamp = nowTimestamp + randomOffset;\r",
+									"\r",
+									"  // Create a Date object and format it in ISO 8601 format\r",
+									"  const randomFutureDate = new Date(randomFutureTimestamp);\r",
+									"  return randomFutureDate.toISOString();\r",
+									"}\r",
+									"\r",
+									"\r",
+									"// Example usage:\r",
+									"const randomDateTime1 = generateRandomDatetimeAfterNow();\r",
+									"const randomDateTime2 = generateRandomDatetimeAfterNow();\r",
+									"const randomDateTime3 = generateRandomDatetimeAfterNow();\r",
+									"\r",
+									"pm.environment.set('randomDate1', randomDateTime1);\r",
+									"pm.environment.set('randomDate2', randomDateTime2);\r",
+									"pm.environment.set('randomDate3', randomDateTime3);\r",
+									"const now = new Date();\r",
+									"const formattedDate = now.toISOString();\r",
+									"\r",
+									"pm.environment.set('timestamp', formattedDate);\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Invalid date format\", function () {\r",
+									"    // Status code assertion\r",
+									"    pm.response.to.have.status(400);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{userToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": "JSON Type",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"reservationDate\": \"wrong-format-date\",\r\n  \"user\": \"{{userId}}\",\r\n  \"coworkingSpace\": \"662b4e52b2d1dc12fd194d00\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/v1/reservations",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"reservations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all reservations",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{userToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/v1/reservations",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"reservations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add reservation3",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{userToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2MWI3MTU1MjFhM2VkODM0NjhlYTU3OSIsImlhdCI6MTcxNDEyNTQxNCwiZXhwIjoxNzE2NzE3NDE0fQ.Bb-oTlgg6TyJINWDtDZUSHAHXeYTN5Kf6O8JHTE5KVI"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"reservationDate\": \"2021-06-01\",\n  \"user\": \"{{userId}}\",\n  \"coworkingSpace\": \"662b4e52b2d1dc12fd194d00\"\n}"
+						},
+						"url": {
+							"raw": "{{URL}}/api/v1/reservations",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"reservations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add reservation4",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"reservation is full for user\", function () {",
+									"    // Status code assertion",
+									"    pm.response.to.have.status(400);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{userToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2MWI3MTU1MjFhM2VkODM0NjhlYTU3OSIsImlhdCI6MTcxNDEyNTQxNCwiZXhwIjoxNzE2NzE3NDE0fQ.Bb-oTlgg6TyJINWDtDZUSHAHXeYTN5Kf6O8JHTE5KVI"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"reservationDate\": \"2021-06-01\",\n  \"user\": \"661b715521a3ed83468ea579\",\n  \"coworkingSpace\": \"662b4e52b2d1dc12fd194d00\"\n}"
+						},
+						"url": {
+							"raw": "{{URL}}/api/v1/reservations",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"reservations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete reservation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "accept",
+								"value": "*/*"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2MWI3MTU1MjFhM2VkODM0NjhlYTU3OSIsImlhdCI6MTcxNDEyNTQxNCwiZXhwIjoxNzE2NzE3NDE0fQ.Bb-oTlgg6TyJINWDtDZUSHAHXeYTN5Kf6O8JHTE5KVI"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/api/v1/reservations/{{userReservationId}}",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"reservations",
+								"{{userReservationId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200); \r",
+									"});\r",
+									"\r",
+									"pm.test(\"Success message is returned\", function () {\r",
+									"    const jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.success).to.true; \r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{authToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/api/v1/auth/logout",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "seq9-12 (admin)",
+			"item": [
+				{
+					"name": "auth/register admin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200); ",
+									"});",
+									"",
+									"pm.test(\"Response contains success message\", function () {",
+									"    const jsonData = pm.response.json(); ",
+									"    pm.expect(jsonData.success).to.be.true; ",
+									"});",
+									"",
+									"pm.test(\"Token is present\", function () {",
+									"    const jsonData = pm.response.json(); ",
+									"    pm.expect(jsonData.token).to.exist; ",
+									"});",
+									"",
+									"// set env variables of user",
+									"const requestData = JSON.parse(pm.request.body.raw);",
+									"const responseData = pm.response.json(); ",
+									"pm.environment.set(\"adminEmail\", requestData.email); ",
+									"pm.environment.set(\"adminName\", requestData.name)",
+									"pm.environment.set(\"adminPassword\", requestData.password); ",
+									"if (requestData.role == \"user\"){",
+									"    pm.environment.set(\"userToken\", responseData.token); ",
+									"}",
+									"else{",
+									"    pm.environment.set(\"adminToken\", responseData.token)",
+									"}",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\":\"{{$randomEmail}}\",\n    \"name\":\"{{$randomFileName}}\",\n    \"password\":\"123456789\",\n    \"telephone\" : \"{{$randomPhoneNumber}}\",\n    \"role\": \"admin\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/v1/auth/register",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "admin register",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\":\"s@gmail.com\",\n    \"name\":\"p\",\n    \"password\":\"5465464ads\",\n    \"telephone\" : \"092-253-0275\",\n    \"role\": \"admin\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{URL}}/api/v1/auth/register",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"auth",
+										"register"
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						},
+						{
+							"name": "user register",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\":\"{{$randomEmail}}\",\n    \"name\":\"{{$randomFileName}}\",\n    \"password\":\"{{$randomPassword}}\",\n    \"telephone\" : \"{{$randomPhoneNumber}}\",\n    \"role\": \"user\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{URL}}/api/v1/auth/register",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"auth",
+										"register"
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						}
+					]
+				},
+				{
+					"name": "auth/login admin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"{{adminEmail}}\",\n    \"name\": \"{{adminName}}\",\n    \"password\": \"{{adminPassword}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/api/v1/auth/login",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all reservations Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{adminToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/v1/reservations",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"reservations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update other reservation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2MWI3MTU1MjFhM2VkODM0NjhlYTU3OSIsImlhdCI6MTcxNDEyNTQxNCwiZXhwIjoxNzE2NzE3NDE0fQ.Bb-oTlgg6TyJINWDtDZUSHAHXeYTN5Kf6O8JHTE5KVI"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"reservationDate\": \"9999-06-01\",\n  \"user\": \"{{userId}}\",\n  \"coworkingSpace\": \"{{globalSpaceId}}\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:5000/api/v1/reservations/{{userReservationIdForAdmin}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"reservations",
+								"{{userReservationIdForAdmin}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete other reservation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "accept",
+								"value": "*/*"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2MWI3MTU1MjFhM2VkODM0NjhlYTU3OSIsImlhdCI6MTcxNDEyNTQxNCwiZXhwIjoxNzE2NzE3NDE0fQ.Bb-oTlgg6TyJINWDtDZUSHAHXeYTN5Kf6O8JHTE5KVI"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:5000/api/v1/reservations/{{userReservationIdForAdmin}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"api",
+								"v1",
+								"reservations",
+								"{{userReservationIdForAdmin}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
