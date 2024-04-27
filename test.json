@@ -1,0 +1,28 @@
+[{
+    "name": "Test User",
+    "password": "testpassword",
+    "telephone": "123-456-7890",
+    "role": "admin"
+},
+{
+    "email": "invalidemail",
+    "name": "Test User",
+    "password": "testpassword",
+    "telephone": "123-456-7890",
+    "role": "admin"
+},
+{
+    "email": "testuser@gmail.com",
+    "name": "Test User",
+    "password": "123",
+    "telephone": "123-456-7890",
+    "role": "admin"
+},
+{
+    "email": "testuser@gmail.com",
+    "name": "Test User",
+    "password": "testpassword",
+    "telephone": "123-456-7890",
+    "role": "invalidrole"
+}
+]
